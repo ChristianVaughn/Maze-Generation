@@ -3,7 +3,10 @@
 #include"algo/binary_tree.cc"
 
 int main() {
-    Grid grid(10, 10);
-    std::cout << grid.get_size() << std::endl;
+    Grid grid(7, 7);
+    
+    BinaryTree::on(grid);
+    grid.print();
+
     return 0;
 }

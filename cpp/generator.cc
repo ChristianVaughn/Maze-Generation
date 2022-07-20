@@ -49,7 +49,7 @@ struct Generator {
             return *this;
         }
         T operator*() const {
-            return owner.h_.promise().current_value;
+            return owner.h_.promise().value_;
         }
     };  
 
@@ -66,7 +66,7 @@ struct Generator {
     full_ = false;
     return std::move(h_.promise().value_);
   }
-  iterator begin() {
+    iterator begin() {
         return iterator{*this, false};
     }
     iterator end() {

@@ -1,6 +1,11 @@
 #include "cell.cc"
 #include <vector>
 #include "generator.cc"
+#include <string>
+#include <iostream>
+#include <random>
+
+
 
 class Grid {
     
@@ -47,8 +52,12 @@ class Grid {
         return grid[pos.first][pos.second];
     }
     Cell* random_cell() {
-        int row = rand() % rows;
-        int col = rand() % cols;
+        std::random_device dev;
+        std::mt19937 rng(dev());
+        std::uniform_int_distribution<std::mt19937::result_type> dist_r(0,rows-1);
+        std::uniform_int_distribution<std::mt19937::result_type> dist_c(0,cols-1);
+        int row = dist_r(rng);
+        int col = dist_c(rng);
         return grid[row][col];
     }
     int get_size() {
@@ -62,8 +71,38 @@ class Grid {
 
         for(auto const& row : each_row()) {
             for(auto const& cell : row)
-                co_yield cell;
-               break; 
+                co_yield cell; 
         }
     }
+
+    void print() {
+        std::string output = "+";
+        for (size_t i = 0; i < cols; i++)
+        {
+            output+= "---+";
+        }
+        output+= "\n";
+
+        for(auto const& row : each_row()) {
+            std::string top = "|";
+            std::string bottom = "+";
+
+            for(auto& c : row){
+                Cell* cell = c;
+                if(!cell)
+                    cell = new Cell(-1,-1);
+                std::string body = "   ";
+                std::string east_wall = (cell -> is_linked(cell -> east)) ? " " : "|";
+                top += body + east_wall;
+                std::string south_wall = (cell -> is_linked(cell -> south)) ? "   " : "---";
+                std::string corner = "+";
+                bottom+= south_wall + corner;
+            }
+            output += top + "\n" + bottom + "\n";
+        }
+        std::cout << output;
+        return;
+    }
+
+    
 };
