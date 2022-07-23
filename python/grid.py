@@ -78,9 +78,9 @@ class Grid:
                 if cell is None:
                     cell = Cell(-1,-1)
                 body = "   "
-                east_wall = (cell.is_linked(cell.east) ? " " : "|")
+                east_wall = " " if cell.is_linked(cell.east) else "|"
                 top += body + east_wall
-                south_wall = (cell.is_linked(cell.south) ? "   " : "---")
+                south_wall = "   " if cell.is_linked(cell.south) else "---"
                 corner = "+"
                 bottom += south_wall + corner
             output += top + "\n" + bottom + "\n"
