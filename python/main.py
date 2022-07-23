@@ -1,6 +1,8 @@
 from grid import Grid
-from binary_tree import BinaryTree
+from sidewinder import Sidewinder
 
-grid = Grid(10, 10)
-BinaryTree.on(grid)
-print(grid)
+grid = Grid(25, 25)
+Sidewinder.on(grid)
+#print(grid)
+img = grid.to_png()
+img.save('sidewinder.png')

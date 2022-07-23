@@ -1,5 +1,7 @@
 import random
 from cell import Cell
+from PIL import Image, ImageDraw
+
 
 class Grid:
     def __init__(self, rows, columns):
@@ -85,4 +87,31 @@ class Grid:
                 bottom += south_wall + corner
             output += top + "\n" + bottom + "\n"
         return output
+    def to_png(self,cell_size = 10):
+        img_width = cell_size * self.columns
+        img_height = cell_size * self.rows
+        img = Image.new('RGB', (img_width+1, img_height+1), color = 'white')
+        draw = ImageDraw.Draw(img)
+
+        for cell in self.each_cell():
+            x1 = cell.col * cell_size
+            y1 = cell.row * cell_size
+            x2 = (cell.col + 1) * cell_size
+            y2 = (cell.row + 1) * cell_size
+
+            if not cell.north:
+                draw.line((x1, y1, x2, y1), fill = 'black')
+            if not cell.west:
+                draw.line((x1, y1, x1, y2), fill = 'black')
+
+            if not cell.is_linked(cell.east):
+                draw.line((x2, y1, x2, y2), fill = 'black')
+            if not cell.is_linked(cell.south):
+                draw.line((x1, y2, x2, y2), fill = 'black')
+        return img
+
+
+
+
+
         
