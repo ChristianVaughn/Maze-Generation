@@ -41,3 +41,13 @@ class Distances(MutableMapping):
                     break
         return breadcrumbs
     
+    def max(self):
+        max_distance = 0
+        max_cell = self.root
+        
+        for cell, distance in self.store.items():
+            if distance > max_distance:
+                max_distance = distance
+                max_cell = cell
+        return (max_cell, max_distance)
+    

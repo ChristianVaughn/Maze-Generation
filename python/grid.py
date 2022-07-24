@@ -1,6 +1,6 @@
 import random
 from cell import Cell
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageColor
 from numpy import base_repr
 
 
@@ -92,27 +92,35 @@ class Grid:
             output += top + "\n" + bottom + "\n"
         return output
 
+    def background_color_for(self, cell):
+        return None
+
     def to_png(self,cell_size = 10):
         img_width = cell_size * self.columns
         img_height = cell_size * self.rows
         img = Image.new('RGB', (img_width+1, img_height+1), color = 'white')
         draw = ImageDraw.Draw(img)
+        for mode in ["background", "walls"]:
+            for cell in self.each_cell():
+                x1 = cell.col * cell_size
+                y1 = cell.row * cell_size
+                x2 = (cell.col + 1) * cell_size
+                y2 = (cell.row + 1) * cell_size
 
-        for cell in self.each_cell():
-            x1 = cell.col * cell_size
-            y1 = cell.row * cell_size
-            x2 = (cell.col + 1) * cell_size
-            y2 = (cell.row + 1) * cell_size
+                if mode == "background":
+                    color = self.background_color_for(cell)
+                    if color is not None:
+                        draw.rectangle((x1, y1, x2, y2), fill = color)
+                else:
+                    if not cell.north:
+                        draw.line((x1, y1, x2, y1), fill = 'black')
+                    if not cell.west:
+                        draw.line((x1, y1, x1, y2), fill = 'black')
 
-            if not cell.north:
-                draw.line((x1, y1, x2, y1), fill = 'black')
-            if not cell.west:
-                draw.line((x1, y1, x1, y2), fill = 'black')
-
-            if not cell.is_linked(cell.east):
-                draw.line((x2, y1, x2, y2), fill = 'black')
-            if not cell.is_linked(cell.south):
-                draw.line((x1, y2, x2, y2), fill = 'black')
+                    if not cell.is_linked(cell.east):
+                        draw.line((x2, y1, x2, y2), fill = 'black')
+                    if not cell.is_linked(cell.south):
+                        draw.line((x1, y2, x2, y2), fill = 'black')
         return img
 
 #DistanceGrid class that inherits from Grid
@@ -127,6 +135,25 @@ class DistanceGrid(Grid):
             return base_repr(self.distances[cell], base = 36)
         else:
             return super().contents_of(cell)
+
+class ColoredGrid(Grid):
+    def __init__(self, rows, columns):
+        super().__init__(rows, columns)
+        self.distances = None
+        self.max = None
+
+    def set_distances(self,distances):
+        self.distances = distances
+        farthest, self.max = distances.max()
+
+    def background_color_for(self, cell):
+        distance = self.distances[cell] 
+        if not distance:
+            return None
+        intensity = (self.max - distance) / self.max
+        dark = int(intensity * 255)
+        bright = 128 + int(intensity * 127)
+        return (dark, bright, dark)
 
 
 
