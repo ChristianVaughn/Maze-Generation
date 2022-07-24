@@ -1,6 +1,7 @@
 import random
 from cell import Cell
 from PIL import Image, ImageDraw
+from numpy import base_repr
 
 
 class Grid:
@@ -66,6 +67,9 @@ class Grid:
             for cell in row:
                 yield cell
 
+    def contents_of(self, cell):
+        return " "
+
     #overwrite the str operator to return the grid as a string
     def __str__(self):
         output = "+"
@@ -79,7 +83,7 @@ class Grid:
                 #if cell is none create a new cell at -1,-1
                 if cell is None:
                     cell = Cell(-1,-1)
-                body = "   "
+                body = " " + self.contents_of(cell) + " "
                 east_wall = " " if cell.is_linked(cell.east) else "|"
                 top += body + east_wall
                 south_wall = "   " if cell.is_linked(cell.south) else "---"
@@ -87,6 +91,7 @@ class Grid:
                 bottom += south_wall + corner
             output += top + "\n" + bottom + "\n"
         return output
+
     def to_png(self,cell_size = 10):
         img_width = cell_size * self.columns
         img_height = cell_size * self.rows
@@ -109,6 +114,20 @@ class Grid:
             if not cell.is_linked(cell.south):
                 draw.line((x1, y2, x2, y2), fill = 'black')
         return img
+
+#DistanceGrid class that inherits from Grid
+class DistanceGrid(Grid):
+    def __init__(self, rows, columns):
+        super().__init__(rows, columns)
+        self.distances = None
+
+    #override the contents_of method to return the distance of the cell
+    def contents_of(self, cell):
+        if self.distances and cell in self.distances:
+            return base_repr(self.distances[cell], base = 36)
+        else:
+            return super().contents_of(cell)
+
 
 
 

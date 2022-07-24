@@ -1,8 +1,9 @@
 from grid import Grid
 from sidewinder import Sidewinder
 
-grid = Grid(25, 25)
+grid = Grid(5, 5)
 Sidewinder.on(grid)
-#print(grid)
+print(grid)
 img = grid.to_png()
-img.save('sidewinder.png')
+img.show()
+#img.save('sidewinder.png')
