@@ -13,3 +13,6 @@ print(grid)
 print("Path from NW corner to SW corner:")
 grid.distances = distances.path_to(grid[grid.rows - 1, 0])
 print(grid)
+
+img = grid.to_png()
+img.show()

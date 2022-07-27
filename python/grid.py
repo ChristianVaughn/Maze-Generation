@@ -135,6 +135,14 @@ class DistanceGrid(Grid):
             return base_repr(self.distances[cell], base = 36)
         else:
             return super().contents_of(cell)
+    
+    #! NOT Proper way to do this. Only works if distances contains longest path
+    #TODO find a better way to do this i.e. to color the longest path
+    def background_color_for(self, cell):
+        if self.distances and cell in self.distances:
+                return 'green'
+        else:
+            return None
 
 class ColoredGrid(Grid):
     def __init__(self, rows, columns):
@@ -153,11 +161,4 @@ class ColoredGrid(Grid):
         intensity = (self.max - distance) / self.max
         dark = int(intensity * 255)
         bright = 128 + int(intensity * 127)
-        return (dark, bright, dark)
-
-
-
-
-
-
-        
+        return (dark, bright, dark)  
