@@ -122,6 +122,13 @@ class Grid:
                     if not cell.is_linked(cell.south):
                         draw.line((x1, y2, x2, y2), fill = 'black')
         return img
+    def deadends(self):
+        list = []
+
+        for cell in self.each_cell():
+            if len(cell.links) == 1:
+                list.append(cell)
+        return list
 
 #DistanceGrid class that inherits from Grid
 class DistanceGrid(Grid):
